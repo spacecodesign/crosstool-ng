@@ -13,9 +13,16 @@ do_debug_gdb_parts() {
     need_gdb_src=
     need_ncurses_src=
     need_expat_src=
+    build_host_expat=
 
     if [ "${CT_GDB_CROSS}" = y ]; then
         need_gdb_src=y
+        if [ "${CT_CANADIAN}" = "y" ]; then
+            case "${CT_HOST}" in
+                *mingw*)    build_host_expat=y;;
+                *)          ;;
+            esac
+        fi
     fi
 
     if [ "${CT_GDB_GDBSERVER}" = "y" ]; then
@@ -28,6 +35,10 @@ do_debug_gdb_parts() {
         if [ "${CT_MINGW32}" != "y" ]; then
             need_ncurses_src=y
         fi
+        need_expat_src=y
+    fi
+
+    if [ "${build_host_expat}" = "y" ]; then
         need_expat_src=y
     fi
 }
@@ -117,6 +128,18 @@ do_debug_gdb_build() {
         local gcc_version
 
         CT_DoStep INFO "Installing cross-gdb"
+
+        if [ "${build_host_expat}" = "y" ]; then
+            # Build libexpat
+            CT_DoLog EXTRA "Building host expat"
+            CT_mkdir_pushd "${CT_BUILD_DIR}/build-expat-host-${CT_HOST}"
+            do_gdb_expat_backend host="${CT_HOST}"                    \
+                                 prefix="${CT_BUILD_DIR}/static-host" \
+                                 cflags=""                              \
+                                 ldflags=""
+            CT_Popd
+        fi
+
         CT_DoLog EXTRA "Configuring cross-gdb"
 
         mkdir -p "${CT_BUILD_DIR}/build-gdb-cross"
@@ -125,6 +148,9 @@ do_debug_gdb_build() {
         cross_extra_config=("${extra_config[@]}")
         cross_extra_config+=("--enable-expat")
         cross_extra_config+=("--with-expat=yes")
+        if [ "${build_host_expat}" = "y" ]; then
+            cross_extra_config+=("--with-libexpat-prefix=${CT_BUILD_DIR}/static-host")
+        fi
         case "${CT_THREADS}" in
             none)   cross_extra_config+=("--disable-threads");;
             *)      cross_extra_config+=("--enable-threads");;
