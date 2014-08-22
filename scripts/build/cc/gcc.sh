@@ -532,6 +532,8 @@ do_cc_for_build() {
     build_final_opts+=( "host=${CT_BUILD}" )
     build_final_opts+=( "prefix=${CT_BUILDTOOLS_PREFIX_DIR}" )
     build_final_opts+=( "complibs=${CT_BUILDTOOLS_PREFIX_DIR}" )
+    build_final_opts+=( "cflags=${CT_CFLAGS_FOR_BUILD}" )
+    build_final_opts+=( "ldflags=${CT_LDFLAGS_FOR_BUILD}" )
     build_final_opts+=( "lang_list=$( cc_gcc_lang_list )" )
     if [ "${CT_BARE_METAL}" = "y" ]; then
         # In the tests I've done, bare-metal was not impacted by the
