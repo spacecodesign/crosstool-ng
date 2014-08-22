@@ -92,8 +92,8 @@ do_cc_core_pass_1() {
     core_opts+=( "host=${CT_BUILD}" )
     core_opts+=( "complibs=${CT_BUILDTOOLS_PREFIX_DIR}" )
     core_opts+=( "prefix=${CT_BUILDTOOLS_PREFIX_DIR}" )
-    core_opts+=( "cflags=${CT_CFLAGS_FOR_HOST}" )
-    core_opts+=( "ldflags=${CT_LDFLAGS_FOR_HOST}" )
+    core_opts+=( "cflags=${CT_CFLAGS_FOR_BUILD}" )
+    core_opts+=( "ldflags=${CT_LDFLAGS_FOR_BUILD}" )
     core_opts+=( "lang_list=c" )
 
     CT_DoStep INFO "Installing pass-1 core C compiler"
@@ -117,8 +117,8 @@ do_cc_core_pass_2() {
     core_opts+=( "host=${CT_BUILD}" )
     core_opts+=( "prefix=${CT_BUILDTOOLS_PREFIX_DIR}" )
     core_opts+=( "complibs=${CT_BUILDTOOLS_PREFIX_DIR}" )
-    core_opts+=( "cflags=${CT_CFLAGS_FOR_HOST}" )
-    core_opts+=( "ldflags=${CT_LDFLAGS_FOR_HOST}" )
+    core_opts+=( "cflags=${CT_CFLAGS_FOR_BUILD}" )
+    core_opts+=( "ldflags=${CT_LDFLAGS_FOR_BUILD}" )
     core_opts+=( "lang_list=c" )
 
     # Different conditions are at stake here:
