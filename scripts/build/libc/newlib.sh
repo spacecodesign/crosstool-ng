@@ -124,6 +124,10 @@ do_libc() {
     CT_DoLog EXTRA "Installing C library"
     CT_DoExecLog ALL make install install_root="${CT_SYSROOT_DIR}"
 
+    # newlib's make install does not install the headers in the sysroot, so we do it explicitly
+    CT_DoExecLog ALL cp -a "${CT_SRC_DIR}/newlib-${CT_LIBC_VERSION}/newlib/libc/include/." \
+                           "${CT_HEADERS_DIR}"
+
     if [ "${CT_BUILD_MANUALS}" = "y" ]; then
         local -a doc_dir="${CT_BUILD_DIR}/build-libc/${CT_TARGET}"
 
