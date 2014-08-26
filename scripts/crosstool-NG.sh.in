@@ -440,7 +440,14 @@ if [ -z "${CT_RESTART}" ]; then
             # Not all tools are available for all platforms, but some are required.
             if [ -n "${where}" ]; then
                 CT_DoLog DEBUG "  '${!v}-${tool}' -> '${where}'"
-                printf "#${BANG}${CT_CONFIG_SHELL}\nexec '${where}' \"\${@}\"\n" >"${CT_BUILDTOOLS_PREFIX_DIR}/bin/${!v}-${tool}"
+                maybe_ccache=
+                if [ "${CT_USE_CCACHE}" = "y" ]; then                
+                    case "${tool}" in
+                        gcc|g++) maybe_ccache=ccache;;
+                        *)       ;;    
+                    esac
+                fi
+                printf "#${BANG}${CT_CONFIG_SHELL}\nexec ${maybe_ccache} '${where}' \"\${@}\"\n" >"${CT_BUILDTOOLS_PREFIX_DIR}/bin/${!v}-${tool}"
                 CT_DoExecLog ALL chmod 700 "${CT_BUILDTOOLS_PREFIX_DIR}/bin/${!v}-${tool}"
             else
                 case "${tool}" in

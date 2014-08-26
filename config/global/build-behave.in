@@ -39,6 +39,16 @@ config USE_PIPES
       Use gcc's option -pipe to use pipes rather than temp files when building
       the toolchain.
 
+config USE_CCACHE
+    bool
+    prompt "Use ccache" if ! BACKEND
+    default n
+    depends on EXPERIMENTAL
+    help
+      Use ccache (compiler cache) to speed up recompilation by build and host
+      compilers. This may speed up subsequent runs of crosstool-NG on a given 
+      configuration (but may slow down its first run).
+
 config EXTRA_CFLAGS_FOR_BUILD
     string
     prompt "Extra build compiler flags"
